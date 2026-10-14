@@ -511,22 +511,22 @@
             });
         }
 
-        window.onload = function() {
-            try {
-                google.script.run.withSuccessHandler(function(detectedEmail) {
-                    if (detectedEmail) {
-                        let emailInput = document.getElementById('email');
-                        emailInput.value = detectedEmail;
-                        emailInput.readOnly = true;
-                    }
-                }).getLoggedUserEmail();
-            } catch(e) {}
-
-            google.script.run.withSuccessHandler(function(data) {
-                dataSiswaGlobal = data || [];
-                muatDaftarKelas();
-            }).getDataSiswa();
-        };
+        // Memuat Data Siswa saat halaman pertama kali dibuka
+window.onload = function() {
+    fetch(scriptUrl + "?action=getDataSiswa")
+        .then(response => response.json())
+        .then(data => {
+            dataSiswaGlobal = data || [];
+            muatDaftarKelas();
+        })
+        .catch(err => {
+            console.error("Gagal memuat data kelas:", err);
+            let selectKelas = document.getElementById('kelas');
+            if (selectKelas) {
+                selectKelas.innerHTML = '<option value="">-- Gagal Memuat Data (Cek Koneksi) --</option>';
+            }
+        });
+};
 
         function muatDaftarKelas() {
             let selectKelas = document.getElementById('kelas');
@@ -610,42 +610,56 @@
             } catch(e) {}
         }
 
-        function verifikasiMulai() {
-            initAudio();
+        // Verifikasi Identitas dan Login via Fetch
+function verifikasiMulai() {
+    initAudio();
 
-            emailSiswa = document.getElementById('email').value.trim();
-            kelasSiswa = document.getElementById('kelas').value;
-            namaSiswa = document.getElementById('nama').value;
-            nisnSiswa = document.getElementById('nisn').value.trim();
-            let tokenInput = document.getElementById('token').value.trim();
+    emailSiswa = document.getElementById('email').value.trim();
+    kelasSiswa = document.getElementById('kelas').value;
+    namaSiswa = document.getElementById('nama').value;
+    nisnSiswa = document.getElementById('nisn').value.trim();
+    let tokenInput = document.getElementById('token').value.trim();
 
-            if (!emailSiswa || !kelasSiswa || !namaSiswa || !nisnSiswa || !tokenInput) {
-                tampilPesan("DATA BELUM LENGKAP", "Harap isi Email, Pilih Kelas, Nama, dan Token Ujian!", "warning");
-                return;
+    if (!emailSiswa || !kelasSiswa || !namaSiswa || !nisnSiswa || !tokenInput) {
+        tampilPesan("DATA BELUM LENGKAP", "Harap isi Email, Pilih Kelas, Nama, dan Token Ujian!", "warning");
+        return;
+    }
+
+    let btn = document.getElementById('btn-login');
+    btn.disabled = true;
+    btn.innerText = "Memverifikasi Akses...";
+
+    let urlLogin = scriptUrl + "?action=verifikasiLogin" +
+        "&email=" + encodeURIComponent(emailSiswa) +
+        "&nisn=" + encodeURIComponent(nisnSiswa) +
+        "&token=" + encodeURIComponent(tokenInput);
+
+    fetch(urlLogin)
+        .then(res => res.json())
+        .then(res => {
+            if (res.canLogin) {
+                mapelSiswa = res.mapel;
+                document.getElementById('mapel-title').innerText = "Mata Pelajaran: " + mapelSiswa;
+                
+                document.getElementById('login-box').style.display = 'none';
+                document.getElementById('rules-page').style.display = 'block';
+
+                // Mengambil soal di latar belakang via Fetch
+                fetch(scriptUrl + "?action=getSoal&mapel=" + encodeURIComponent(mapelSiswa))
+                    .then(r => r.json())
+                    .then(dataSoal => initSoal(dataSoal));
+            } else {
+                tampilPesan("GAGAL MASUK", res.message, "error");
+                btn.disabled = false;
+                btn.innerText = "Verifikasi Identitas";
             }
-
-            let btn = document.getElementById('btn-login');
-            btn.disabled = true;
-            btn.innerText = "Memverifikasi Akses...";
-
-            google.script.run.withSuccessHandler(function(res) {
-                if (res.canLogin) {
-                    mapelSiswa = res.mapel;
-                    document.getElementById('mapel-title').innerText = "Mata Pelajaran: " + mapelSiswa;
-                    
-                    // Pindah ke Halaman Tata Tertib Dahulu
-                    document.getElementById('login-box').style.display = 'none';
-                    document.getElementById('rules-page').style.display = 'block';
-
-                    // Mengambil soal di latar belakang
-                    google.script.run.withSuccessHandler(initSoal).AmbilSoalUjian(mapelSiswa);
-                } else {
-                    tampilPesan("GAGAL MASUK", res.message, "error");
-                    btn.disabled = false;
-                    btn.innerText = "Verifikasi Identitas";
-                }
-            }).verifikasiDanCekLogin(emailSiswa, nisnSiswa, tokenInput);
-        }
+        })
+        .catch(err => {
+            tampilPesan("ERROR KONEKSI", "Gagal terhubung ke server verifikasi.", "error");
+            btn.disabled = false;
+            btn.innerText = "Verifikasi Identitas";
+        });
+}
 
         function toggleBtnMulai() {
             let checkbox = document.getElementById('check-agree');
