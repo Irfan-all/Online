@@ -1,5 +1,5 @@
 // ⚠️ MASUKKAN URL WEB APP GOOGLE APPS SCRIPT ANDA
-const scriptUrl = "https://script.google.com/macros/s/AKfycbx.../exec";
+const scriptUrl = "https://script.google.com/macros/s/AKfycbytedJeFJgCQAv67WPJTZ_yewcku0dRsUW64prcjrAIZCzsHYikUB6kEGsWZUTynCBI2w/exec";
 
 let emailSiswa = "", namaSiswa = "", kelasSiswa = "", nisnSiswa = "", mapelSiswa = "";
 let jawabanSiswa = {};
