@@ -1,169 +1,478 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
     <title>Ujian Online CBT Sekolah</title>
-    
+
     <!-- CSS Eksternal -->
-    <link rel="stylesheet" href="style.css">
-    
+    <link rel="stylesheet" href="style.css" />
+
     <!-- Library SweetAlert2 Pop-Up -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-</head>
-<body>
-
+  </head>
+  <body>
     <div class="header">
-        UJIAN ONLINE CBT SEKOLAH
-        <div id="timer" style="color: #f87171; margin-top: 5px;">Sisa Waktu: <span id="time-display">40:00</span></div>
+      Ujian Online
+      <div id="timer" style="color: #f87171; margin-top: 5px">
+        Sisa Waktu: <span id="time-display">40:00</span>
+      </div>
     </div>
 
     <div id="lock-screen">
-        <h2 id="lock-title" style="color: #ef4444;">LAYAR TERKUNCI</h2>
-        <p id="lock-desc">Terdeteksi meninggalkan atau membagi layar ujian.</p>
-        <p id="lock-sub" style="color: #facc15;">Ketuk layar untuk kembali mengerjakan.</p>
+      <h2 id="lock-title" style="color: #ef4444">LAYAR TERKUNCI</h2>
+      <p id="lock-desc">Terdeteksi meninggalkan atau membagi layar ujian.</p>
+      <p id="lock-sub" style="color: #facc15">
+        Ketuk layar untuk kembali mengerjakan.
+      </p>
     </div>
 
     <!-- MODAL PROFIL / IDENTITAS GURU -->
     <div id="profile-modal" class="modal-overlay">
-        <div class="modal-content" style="text-align: center;">
-            <div class="modal-header">
-                <h3 style="margin: 0; color: #1e293b;">Identitas Guru / Pengembang</h3>
-                <button onclick="tutupProfilModal()" style="background: #ef4444; padding: 5px 12px; font-size: 12px;">Tutup ✕</button>
-            </div>
-            <div style="padding: 15px 0;">
-                <div class="profile-avatar">
-                    👨‍🏫
-                </div>
-                <h3 style="margin: 5px 0; color: #1e3a8a;">Pak Irfan, S.Pd.</h3>
-                <p style="margin: 3px 0; color: #2563eb; font-weight: bold;">Guru Mata Pelajaran Informatika</p>
-                <p style="margin: 3px 0; color: #4b5563; font-size: 14px;">NIP: - / NUPTK: -</p>
-                <p style="margin: 3px 0; color: #4b5563; font-size: 14px;">Instansi: Sekolah CBT Online</p>
-                
-                <hr style="margin: 15px 0; border: 0; border-top: 1px solid #e5e7eb;">
-                
-                <p class="profile-quote">
-                    "Pengerjaan ujian yang jujur adalah cerminan dari integritas dan karakter diri. Kerjakan dengan teliti dan penuh percaya diri!"
-                </p>
-                
-                <p style="font-size: 11px; color: #9ca3af; margin-top: 15px;">CBT System v2.5 • GitHub Pages Hosted</p>
-            </div>
+      <div class="modal-content" style="text-align: center">
+        <div class="modal-header">
+          <h3 style="margin: 0; color: #1e293b">Identitas Guru / Pengembang</h3>
+          <button
+            onclick="tutupProfilModal()"
+            style="background: #ef4444; padding: 5px 12px; font-size: 12px"
+          >
+            Tutup ✕
+          </button>
         </div>
+        <div style="padding: 15px 0">
+          <div class="profile-avatar">👨‍🏫</div>
+          <h3 style="margin: 5px 0; color: #1e3a8a">Pak Irfan, S.Kom.</h3>
+          <p style="margin: 3px 0; color: #2563eb; font-weight: bold">
+            Guru Mata Pelajaran Informatika
+          </p>
+          <p style="margin: 3px 0; color: #4b5563; font-size: 14px">
+            NIP: 199610062022211001 / NUPTK: -
+          </p>
+          <p style="margin: 3px 0; color: #4b5563; font-size: 14px">
+            Instansi: UPT SMP NEGERI 6 MEDAN
+          </p>
+
+          <hr
+            style="margin: 15px 0; border: 0; border-top: 1px solid #e5e7eb"
+          />
+
+          <p class="profile-quote">
+            "Pengerjaan ujian yang jujur adalah cerminan dari integritas dan
+            karakter diri. Kerjakan dengan teliti dan penuh percaya diri!"
+          </p>
+
+          <p style="font-size: 11px; color: #9ca3af; margin-top: 15px">
+            CBT System v2.5 • GitHub Pages Hosted
+          </p>
+        </div>
+      </div>
     </div>
 
     <!-- MODAL GRID NOMOR SOAL -->
     <div id="grid-modal" class="modal-overlay">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3 style="margin: 0; color: #1e293b;">Peta Navigasi Soal</h3>
-                <button onclick="tutupGridModal()" style="background: #ef4444; padding: 5px 12px; font-size: 12px;">Tutup ✕</button>
-            </div>
-            <div class="legend-box">
-                <div class="legend-item"><span class="badge badge-green"></span> Terjawab</div>
-                <div class="legend-item"><span class="badge badge-yellow"></span> Ragu-Ragu</div>
-                <div class="legend-item"><span class="badge badge-gray"></span> Belum</div>
-            </div>
-            <div id="grid-soal-container" class="grid-container"></div>
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 style="margin: 0; color: #1e293b">Peta Navigasi Soal</h3>
+          <button
+            onclick="tutupGridModal()"
+            style="background: #ef4444; padding: 5px 12px; font-size: 12px"
+          >
+            Tutup ✕
+          </button>
         </div>
+        <div class="legend-box">
+          <div class="legend-item">
+            <span class="badge badge-green"></span> Terjawab
+          </div>
+          <div class="legend-item">
+            <span class="badge badge-yellow"></span> Ragu-Ragu
+          </div>
+          <div class="legend-item">
+            <span class="badge badge-gray"></span> Belum
+          </div>
+        </div>
+        <div id="grid-soal-container" class="grid-container"></div>
+      </div>
     </div>
 
     <div class="container">
-        <!-- FORM LOGIN -->
-        <div id="login-box">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-                <h2 style="margin:0;">Pilih Identitas & Verifikasi</h2>
-                <button class="btn-profile" onclick="bukaProfilModal()">👤 Identitas Guru</button>
-            </div>
-            
-            <div class="form-group">
-                <label><b>Email Google:</b></label>
-                <input type="email" id="email" class="input-field" placeholder="nama@gmail.com" required>
-            </div>
-
-            <div class="form-group">
-                <label for="kelas"><b>Pilih Kelas:</b></label>
-                <select id="kelas" class="form-control" onchange="onKelasChange()" required>
-                    <option value="">-- Memuat Daftar Kelas... --</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="nama"><b>Pilih Nama Siswa:</b></label>
-                <select id="nama" class="form-control" onchange="onNamaChange()" disabled required>
-                    <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="nisn"><b>NISN Siswa:</b></label>
-                <input type="text" id="nisn" class="form-control" placeholder="NISN akan terisi otomatis" readonly required>
-            </div>
-
-            <div class="form-group">
-                <label for="token"><b>Token Ujian:</b></label>
-                <input type="text" id="token" class="input-field" placeholder="Masukkan Token dari Pengawas" style="text-transform: uppercase;" required>
-            </div>
-
-            <button id="btn-login" style="width: 100%; margin-top: 10px;" onclick="verifikasiMulai()">Verifikasi Identitas</button>
+      <!-- FORM LOGIN -->
+      <div id="login-box">
+        <div
+          style="
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+          "
+        >
+          <h2 style="margin: 0; font-size: 20px">
+            Pilih Identitas & Verifikasi
+          </h2>
+          <button class="btn-info-hub" onclick="bukaModalInfo()">
+            ℹ️ Pusat Informasi
+          </button>
         </div>
 
-        <!-- Halaman TATA TERTIB -->
-        <div id="rules-page" style="display: none;">
-            <h2 style="color: #1e3a8a; margin-top:0;">Petunjuk & Tata Tertib Ujian</h2>
-            <p>Siswa wajib membaca dan memahami aturan berikut sebelum memulai pengerjaan:</p>
+        <div class="form-group">
+          <label><b>Email Google:</b></label>
+          <input
+            type="email"
+            id="email"
+            class="input-field"
+            placeholder="nama@gmail.com"
+            required
+          />
+        </div>
 
-            <div class="rules-box">
-                <div class="rules-title">⚠️ LARANGAN & SISTEM KEAMANAN OTOMATIS:</div>
-                <ul class="rules-list">
-                    <li><b>Dilarang Keluar Aplikasi / Pindah Tab:</b> Meninggalkan halaman ujian atau membuka aplikasi lain akan mencatat poin pelanggaran.</li>
-                    <li><b>Dilarang Menggunakan Layar Terbagi (Split Screen):</b> Mengoperasikan dua aplikasi bersamaan akan memicu penguncian layar otomatis.</li>
-                    <li><b>Batas Maksimal Pelanggaran:</b> Sistem memberikan toleransi <b>maksimal 2 kali peringatan</b>. Pelanggaran ke-3 akan menyebabkan <b>akun diblokir permanen</b> dan jawaban otomatis dikirimkan.</li>
-                    <li><b>Proteksi Tambahan:</b> Fitur Copy-Paste, Screenshot, dan Klik Kanan telah dinonaktifkan demi integritas ujian.</li>
-                    <li><b>Jaringan & Jawaban:</b> Gunakan tombol <b>📋 Daftar Soal</b> untuk memeriksa nomor yang belum dijawab atau masih ragu sebelum menekan tombol Kirim.</li>
-                </ul>
-            </div>
+        <div class="form-group">
+          <label for="kelas"><b>Pilih Kelas:</b></label>
+          <select
+            id="kelas"
+            class="form-control"
+            onchange="onKelasChange()"
+            required
+          >
+            <option value="">-- Memuat Daftar Kelas... --</option>
+          </select>
+        </div>
 
-            <label class="agree-box">
-                <input type="checkbox" id="check-agree" onchange="toggleBtnMulai()" style="transform: scale(1.3);">
-                Saya telah membaca, memahami, dan berjanji akan mematuhi seluruh tata tertib ujian di atas.
-            </label>
+        <div class="form-group">
+          <label for="nama"><b>Pilih Nama Siswa:</b></label>
+          <select
+            id="nama"
+            class="form-control"
+            onchange="onNamaChange()"
+            disabled
+            required
+          >
+            <option value="">-- Pilih Kelas Terlebih Dahulu --</option>
+          </select>
+        </div>
 
-            <button id="btn-start-exam" style="width: 100%; margin-top: 15px; background-color: #16a34a;" onclick="mulaiMengerjakanSoal()" disabled>
-                🚀 Mulai Mengerjakan Ujian Sekarang
+        <div class="form-group">
+          <label for="nisn"><b>NISN Siswa:</b></label>
+          <input
+            type="text"
+            id="nisn"
+            class="form-control"
+            placeholder="NISN akan terisi otomatis"
+            readonly
+            required
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="token"><b>Token Ujian:</b></label>
+          <input
+            type="text"
+            id="token"
+            class="input-field"
+            placeholder="Masukkan Token dari Pengawas"
+            style="text-transform: uppercase"
+            required
+          />
+        </div>
+
+        <button
+          id="btn-login"
+          style="width: 100%; margin-top: 10px"
+          onclick="verifikasiMulai()"
+        >
+          Verifikasi Identitas
+        </button>
+      </div>
+
+      <!-- Halaman TATA TERTIB -->
+      <div id="rules-page" style="display: none">
+        <h2 style="color: #1e3a8a; margin-top: 0">
+          Petunjuk & Tata Tertib Ujian
+        </h2>
+        <p>
+          Siswa wajib membaca dan memahami aturan berikut sebelum memulai
+          pengerjaan:
+        </p>
+
+        <div class="rules-box">
+          <div class="rules-title">⚠️ LARANGAN & SISTEM KEAMANAN OTOMATIS:</div>
+          <ul class="rules-list">
+            <li>
+              <b>Dilarang Keluar Aplikasi / Pindah Tab:</b> Meninggalkan halaman
+              ujian atau membuka aplikasi lain akan mencatat poin pelanggaran.
+            </li>
+            <li>
+              <b>Dilarang Menggunakan Layar Terbagi (Split Screen):</b>
+              Mengoperasikan dua aplikasi bersamaan akan memicu penguncian layar
+              otomatis.
+            </li>
+            <li>
+              <b>Batas Maksimal Pelanggaran:</b> Sistem memberikan toleransi
+              <b>maksimal 2 kali peringatan</b>. Pelanggaran ke-3 akan
+              menyebabkan <b>akun diblokir permanen</b> dan jawaban otomatis
+              dikirimkan.
+            </li>
+            <li>
+              <b>Proteksi Tambahan:</b> Fitur Copy-Paste, Screenshot, dan Klik
+              Kanan telah dinonaktifkan demi integritas ujian.
+            </li>
+            <li>
+              <b>Jaringan & Jawaban:</b> Gunakan tombol
+              <b>📋 Daftar Soal</b> untuk memeriksa nomor yang belum dijawab
+              atau masih ragu sebelum menekan tombol Kirim.
+            </li>
+          </ul>
+        </div>
+
+        <label class="agree-box">
+          <input
+            type="checkbox"
+            id="check-agree"
+            onchange="toggleBtnMulai()"
+            style="transform: scale(1.3)"
+          />
+          Saya telah membaca, memahami, dan berjanji akan mematuhi seluruh tata
+          tertib ujian di atas.
+        </label>
+
+        <button
+          id="btn-start-exam"
+          style="width: 100%; margin-top: 15px; background-color: #16a34a"
+          onclick="mulaiMengerjakanSoal()"
+          disabled
+        >
+          🚀 Mulai Mengerjakan Ujian Sekarang
+        </button>
+      </div>
+
+      <!-- SOAL UJIAN -->
+      <div id="exam-box" style="display: none">
+        <div class="top-bar">
+          <span id="mapel-title" style="font-weight: bold; color: #1e3a8a"
+            >Ujian CBT</span
+          >
+          <div style="display: flex; gap: 8px">
+            <button class="btn-profile" onclick="bukaProfilModal()">
+              👤 Guru
             </button>
+            <button class="btn-grid" onclick="bukaGridModal()">
+              📋 Daftar Soal
+            </button>
+          </div>
         </div>
 
-        <!-- SOAL UJIAN -->
-        <div id="exam-box" style="display: none;">
-            <div class="top-bar">
-                <span id="mapel-title" style="font-weight: bold; color: #1e3a8a;">Ujian CBT</span>
-                <div style="display: flex; gap: 8px;">
-                    <button class="btn-profile" onclick="bukaProfilModal()">👤 Guru</button>
-                    <button class="btn-grid" onclick="bukaGridModal()">📋 Daftar Soal</button>
-                </div>
-            </div>
+        <div id="warning-box">PERINGATAN PELANGGARAN!</div>
+        <div id="daftar-soal-container"></div>
+        <div class="page-indicator" id="page-indicator">Halaman 1 dari 1</div>
 
-            <div id="warning-box">PERINGATAN PELANGGARAN!</div>
-            <div id="daftar-soal-container"></div>
-            <div class="page-indicator" id="page-indicator">Halaman 1 dari 1</div>
-
-            <div class="nav-buttons">
-                <button id="btn-prev" onclick="gantiHalaman(-1)">◄ Sebelumnya</button>
-                <button id="btn-next" onclick="gantiHalaman(1)">Berikutnya ►</button>
-                <button id="btn-submit" style="display: none; background-color: #16a34a;" onclick="submitJawaban(false)">Kirim Seluruh Jawaban</button>
-            </div>
+        <div class="nav-buttons">
+          <button id="btn-prev" onclick="gantiHalaman(-1)">◄ Sebelumnya</button>
+          <button id="btn-next" onclick="gantiHalaman(1)">Berikutnya ►</button>
+          <button
+            id="btn-submit"
+            style="display: none; background-color: #16a34a"
+            onclick="submitJawaban(false)"
+          >
+            Kirim Seluruh Jawaban
+          </button>
         </div>
+      </div>
 
-        <!-- HASIL -->
-        <div id="result-box" style="display: none; text-align: center;">
-            <h2 id="result-title" style="color: #16a34a;">UJIAN SELESAI</h2>
-            <p id="result-desc">Jawaban Anda telah berhasil tersimpan di database.</p>
-            <h1 id="skor-display" style="font-size: 48px; color: #2563eb;">0</h1>
-            <button class="btn-profile" style="margin-top: 15px;" onclick="bukaProfilModal()">👤 Identitas Pengembang</button>
-        </div>
+      <!-- HASIL -->
+      <div id="result-box" style="display: none; text-align: center">
+        <h2 id="result-title" style="color: #16a34a">UJIAN SELESAI</h2>
+        <p id="result-desc">
+          Jawaban Anda telah berhasil tersimpan di database.
+        </p>
+        <h1 id="skor-display" style="font-size: 48px; color: #2563eb">0</h1>
+        <button
+          class="btn-profile"
+          style="margin-top: 15px"
+          onclick="bukaProfilModal()"
+        >
+          👤 Identitas Pengembang
+        </button>
+      </div>
     </div>
 
     <!-- JavaScript Eksternal -->
     <script src="script.js"></script>
-</body>
+    <!-- BUTTON / TOMBOL BUKA PUSAT INFORMASI (Di Atas Form Login) -->
+    <!-- Gantikan bagian tombol Identitas Guru lama dengan ini di login-box -->
+    <!-- <div
+      style="
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
+      "
+    >
+      <h2 style="margin: 0">Pilih Identitas & Verifikasi</h2>
+      <button class="btn-info-hub" onclick="bukaModalInfo()">
+        ℹ️ Pusat Informasi
+      </button>
+    </div> -->
+
+    <!-- MODAL PUSAT INFORMASI (4 MENU) -->
+    <div id="info-modal" class="modal-overlay">
+      <div class="modal-content info-modal-size">
+        <div class="modal-header">
+          <h3 style="margin: 0; color: #1e293b">📌 Informasi Aplikasi CBT</h3>
+          <button
+            onclick="tutupModalInfo()"
+            style="background: #ef4444; padding: 5px 12px; font-size: 12px"
+          >
+            Tutup ✕
+          </button>
+        </div>
+
+        <!-- NAVIGASI TAB MENU -->
+        <div class="tab-menu-container">
+          <button
+            class="tab-btn active"
+            onclick="bukaTab(event, 'tab-identitas')"
+          >
+            1. Identitas
+          </button>
+          <button
+            class="tab-btn"
+            onclick="bukaTab(event, 'tab-latar-belakang')"
+          >
+            2. Latar Belakang & Tujuan
+          </button>
+          <button class="tab-btn" onclick="bukaTab(event, 'tab-fitur')">
+            3. Deskripsi Fitur
+          </button>
+          <button class="tab-btn" onclick="bukaTab(event, 'tab-pemanfaatan')">
+            4. Penjelasan Pemanfaatan
+          </button>
+        </div>
+
+        <!-- KONTEN TAB 1: IDENTITAS -->
+        <div id="tab-identitas" class="tab-content active">
+          <div class="profile-card">
+            <div class="profile-avatar">👨‍🏫</div>
+            <h3 style="margin: 5px 0; color: #1e3a8a">Pak Irfan, S.Pd.</h3>
+            <p style="margin: 3px 0; color: #2563eb; font-weight: bold">
+              Guru & Pengembang Aplikasi
+            </p>
+            <p style="margin: 3px 0; color: #4b5563; font-size: 14px">
+              Mata Pelajaran: Informatika
+            </p>
+            <p style="margin: 3px 0; color: #4b5563; font-size: 14px">
+              Instansi: UPT SMP NEGERI 6 MEDAN
+            </p>
+            <hr
+              style="margin: 15px 0; border: 0; border-top: 1px solid #e5e7eb"
+            />
+            <p class="profile-quote">
+              "Kejujuran adalah pondasi utama dalam pendidikan. Sistem ini
+              dirancang untuk melatih integritas dan kepercayaan diri setiap
+              siswa."
+            </p>
+          </div>
+        </div>
+
+        <!-- KONTEN TAB 2: LATAR BELAKANG & TUJUAN -->
+        <div id="tab-latar-belakang" class="tab-content">
+          <h4 class="info-title">📄 Latar Belakang</h4>
+          <p class="info-text">
+            Seiring pesatnya perkembangan teknologi di bidang pendidikan,
+            pelaksanaan ujian berbasis kertas (*Paper-Based Test*) menghadapi
+            berbagai kendala seperti tingginya biaya pencetakan, lamanya proses
+            koreksi manual, serta risiko kebocoran soal dan kecurangan.
+          </p>
+          <h4 class="info-title">🎯 Tujuan Penggunaan</h4>
+          <ul class="info-list">
+            <li>
+              <b>Efisiensi Operasional:</b> Menghemat anggaran kertas dan
+              mempercepat proses pengolahan nilai secara *real-time*.
+            </li>
+            <li>
+              <b>Integritas & Keadilan:</b> Menjamin pengerjaan ujian yang jujur
+              melalui fitur *anti-cheat* otomatis.
+            </li>
+            <li>
+              <b>Aksesibilitas Tinggi:</b> Memudahkan siswa mengakses sistem
+              ujian kapan saja dan di mana saja melalui jaringan internet
+              mandiri.
+            </li>
+          </ul>
+        </div>
+
+        <!-- KONTEN TAB 3: DESKRIPSI FITUR -->
+        <div id="tab-fitur" class="tab-content">
+          <h4 class="info-title">🛠️ Fitur-Fitur Unggulan CBT</h4>
+          <div class="feature-grid">
+            <div class="feature-card">
+              <h5>🛡️ Proteksi Anti-Cheat</h5>
+              <p>
+                Deteksi otomatis *pindah tab*, *split screen* di HP, penguncian
+                layar, serta penonaktifan tombol *copy-paste* dan klik kanan.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h5>🔀 Pengacakan Soal & Opsi</h5>
+              <p>
+                Sistem mengacak nomor soal dan pilihan jawaban secara acak untuk
+                mencegah kecurangan antar siswa.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h5>🔑 Sistem Token & Verifikasi</h5>
+              <p>
+                Validasi NISN siswa dan token ujian dari pengawas untuk
+                memastikan hanya siswa berhak yang dapat masuk.
+              </p>
+            </div>
+            <div class="feature-card">
+              <h5>📋 Peta Navigasi & Ragu-Ragu</h5>
+              <p>
+                Grid nomor interaktif memudahkan siswa menandai jawaban
+                ragu-ragu dan melompat ke nomor tertentu.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- KONTEN TAB 4: PENJELASAN PEMANFAATAN -->
+        <div id="tab-pemanfaatan" class="tab-content">
+          <h4 class="info-title">📖 Panduan Pemanfaatan Aplikasi</h4>
+          <div class="guide-step">
+            <span class="step-num">1</span>
+            <div>
+              <b>Persiapan Siswa:</b>
+              <p>
+                Siswa memilih kelas, nama, memasukkan NISN serta Token Ujian
+                aktif dari pengawas.
+              </p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">2</span>
+            <div>
+              <b>Persetujuan Tata Tertib:</b>
+              <p>
+                Siswa wajib membaca aturan keselamatan ujian dan menyetujui
+                pernyataan integritas sebelum soal terbuka.
+              </p>
+            </div>
+          </div>
+          <div class="guide-step">
+            <span class="step-num">3</span>
+            <div>
+              <b>Pengerjaan & Pengiriman:</b>
+              <p>
+                Siswa menjawab soal sesuai estimasi waktu. Setelah selesai,
+                nilai dihitung otomatis dan tersimpan langsung ke Google Sheets
+                guru.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
 </html>
